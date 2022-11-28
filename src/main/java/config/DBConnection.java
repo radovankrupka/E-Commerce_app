@@ -9,7 +9,7 @@ public class DBConnection {
         Connection con=null;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con= DriverManager.getConnection("jdbc:mysql://localhost/chat_db","root","");
+            con= DriverManager.getConnection("jdbc:mysql://localhost/obchod","root","");
         }catch(Exception e){System.out.println(e);}
         return con;
     }

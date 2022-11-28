@@ -13,18 +13,18 @@ import java.util.List;
 public class UserDAO {
 
 
-    public static boolean checkIfUserExists(String nick, String pwd)  {
+    public static boolean checkIfUserExists(String login, String pwd)  {
     try {
 
     Connection con = DBConnection.getConnection();
     Statement stmt = con.createStatement();
-    String sql = " select count(*) as poc FROM users " + " WHERE nickname = '" + nick + "' AND password = '" + pwd + "'";
+    String sql = " select count(*) as poc FROM users WHERE login = '" + login + "' AND pwd = '" + pwd + "'";
     ResultSet rs = stmt.executeQuery(sql);
 
-            /*"from users WHERE ( users.nickname = '" + nick + "' AND users.password = '" + pwd+"')");*/
 
     rs.next();
     if (rs.getInt("poc") == 1){ // uspesne prihlasenie
+        System.out.println("vysl: " + rs.getInt("poc"));
         return true;
     }
     else {
@@ -36,7 +36,7 @@ public class UserDAO {
     }
     }
 
-    public static User getUserByNick(String nick){
+    public static User getUserByLogin(String login){
         User user = new User();
 
         try {
@@ -44,18 +44,26 @@ public class UserDAO {
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
-            String sql = " select  id, nickname,banned FROM users WHERE nickname = '" + nick + "'";
+            String sql = " select  * FROM users WHERE login = '" + login + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
             rs.next();
             System.out.println(rs.getInt("id"));
             user.setId(rs.getInt("id"));
-            user.setNickname(rs.getString("nickname"));
-            user.setBanned(rs.getBoolean("banned"));
+            user.setLogin(rs.getString("login"));
+            user.setAdresa(rs.getString("adresa"));
+            user.setPwd(rs.getString("pwd"));
+            user.setZlava(rs.getInt("zlava"));
+            user.setMeno(rs.getString("meno"));
+            user.setPriezvisko(rs.getString("priezvisko"));
+            user.setPoznamky(rs.getString("poznamky"));
+            user.setJe_admin(rs.getBoolean("je_admin"));
+
 
 
             rs.close();
             stmt.close();
+            con.close();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -77,8 +85,14 @@ public class UserDAO {
 
             rs.next();
             user.setId(rs.getInt("id"));
-            user.setNickname(rs.getString("nickname"));
-            user.setBanned(rs.getBoolean("banned"));
+            user.setLogin(rs.getString("login"));
+            user.setAdresa(rs.getString("adresa"));
+            user.setPwd(rs.getString("pwd"));
+            user.setZlava(rs.getInt("zlava"));
+            user.setMeno(rs.getString("meno"));
+            user.setPriezvisko(rs.getString("priezvisko"));
+            user.setPoznamky(rs.getString("poznamky"));
+            user.setJe_admin(rs.getBoolean("je_admin"));
 
 
             rs.close();
@@ -92,34 +106,9 @@ public class UserDAO {
     }
 
 
-    public static List<User> getAllBannedUsers() {
-        List<User> list = new ArrayList<>();
-
-        try{
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE banned > 0");
 
 
-            while(rs.next()){
-
-                User user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setNickname(rs.getString("nickname"));
-                user.setBanned(true);
-                System.out.println(user.getNickname());
-                list.add(user);
-            }
-
-            con.close();
-
-        }catch(Exception e){e.printStackTrace();}
-
-        return list;
-    }
-
-    public static void unbanUser(String id) {
+    /*public static void unbanUser(String id) {
         int ID = Integer.parseInt(id);
 
         try{
@@ -152,5 +141,5 @@ public class UserDAO {
 
         }catch(Exception e){e.printStackTrace();}
 
-    }
+    }*/
 }

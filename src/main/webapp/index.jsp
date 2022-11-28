@@ -21,12 +21,12 @@
                             <p class="text-white-50 mb-5">Please enter your login and password!</p>
 
                             <div class="form-outline form-white mb-4">
-                                <input type="text" id="email" class="form-control form-control-lg" />
+                                <input type="text" name="email" id="email" class="form-control form-control-lg" />
                                 <label class="form-label" for="email">Email</label>
                             </div>
 
                             <div class="form-outline form-white mb-4">
-                                <input type="password" id="password" class="form-control form-control-lg" />
+                                <input type="password" name="password" id="password" class="form-control form-control-lg" />
                                 <label class="form-label" for="password">Password</label>
                             </div>
 
@@ -59,6 +59,7 @@
 <br><br>
 
 
+
 <%--
 <form action="Home" method="POST">
     NICKNAME:      <input type="text" name="nickname"> <br> <br>
@@ -71,6 +72,7 @@
 <br>
 <br>
 --%>
+
 <%--
 
 VALID CREDENTIALS: <br>
