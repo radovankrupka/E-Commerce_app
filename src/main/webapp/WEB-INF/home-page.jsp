@@ -17,40 +17,26 @@
 
 <table id = "data" class="table table-primary table-hover">
     <tr>
-        <th>Date</th>
-        <th>Author</th>
-        <th>Post</th>
+        <th>Nazov</th>
+        <th>Cena</th>
+        <th>Na sklade</th>
         <th></th><th></th><th></th>
 
     </tr>
 
 
-    <c:forEach items="${userPostList}" var="userPost">
+    <c:forEach items="${tovarList}" var="tovar">
         <tr>
-            <td>${userPost.post.posted_at}</td>
-            <td>${userPost.user.nickname}</td>
-
+            <td>${tovar.nazov}</td>
+            <td>${tovar.cena}</td>
+            <td>${tovar.ks}</td>
             <td>
-                <c:if test="${userPost.user.id != user.id}">
-                <form action="home">
-                    <input type="hidden" name="ban" value="${userPost.user.id}">
-                    <input type="submit" value="BAN USER" class="btn btn-danger btn-sm">
-                </form>
-                </c:if>
-            </td>
-
-            <td>${userPost.post.post_text}</td>
-
-                <td>
-                    <c:if test="${userPost.user.id == user.id}">
-                    <form action="remove">
-                        <input type="hidden" name="post_id" value="${userPost.post.id}">
-                        <input type="submit" value="REMOVE POST" class="btn btn-warning btn-sm">
+                    <form action="AddItem">
+                        <input type="hidden" name="itemToAddId" value="${tovar.id}">
+                        <input type="number" name="numOfItems" max = "${tovar.ks}" min="1" value="1">
+                        <input type="submit" value="Add to cart" class="btn btn-success btn-sm">
                     </form>
-                    </c:if>
-                </td>
-
-
+            </td>
 
         </tr>
     </c:forEach>
@@ -59,43 +45,10 @@
 </table>
 
 
-<c:if test="${act == 'add'}">
-
-    YOUR POST:
-    <br>
-    <form name="post-form" method="get" action="save">
-
-   <textarea rows = "4" cols = "40" name = "post-text" placeholder="Enter text of your post here: ">
-   </textarea>
-        <br>
-        <input type="submit" value="SUBMIT"  class="btn btn-primary btn-lg btn-block ">
-
-    </form>
-</c:if>
-
-<div class="d-flex justify-content-center align-items-center">
-    <form action="home" >
-        <input type="hidden" name="act" value="add">
-        <input type="submit" value="ADD POST" class="btn btn-primary btn-lg btn-block">
-    </form>
-</div>
-
-
-<form action="banned" class="d-flex justify-content-center align-items-center" >
-    <input type="submit" value="TABLE OF SINNERS" class="btn btn-danger btn-lg btn-block">
-</form>
-
-
-
-
 <form action="home" class="d-flex justify-content-center align-items-center" >
     <input type="hidden" name="operacia" value="logout">
     <input type="submit" value="LOGOUT" class="btn btn-primary btn-lg btn-block">
 </form>
-
-
-
-
 
 
 
