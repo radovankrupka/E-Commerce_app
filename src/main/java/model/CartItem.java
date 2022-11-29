@@ -1,5 +1,7 @@
 package model;
 
+import DAO.TovarDAO;
+
 public class CartItem {
 
     private int id;
@@ -8,7 +10,15 @@ public class CartItem {
     private double cena;
     private int poc_ks;
 
+    private Tovar tovar;
 
+    public Tovar getTovar() {
+        return tovar;
+    }
+
+    public void setTovar(Tovar tovar) {
+        this.tovar = tovar;
+    }
 
     public int getId() {
         return id;
@@ -48,5 +58,17 @@ public class CartItem {
 
     public void setPoc_ks(int poc_ks) {
         this.poc_ks = poc_ks;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", id_pouz=" + id_pouz +
+                ", id_tovaru=" + id_tovaru +
+                ", cena=" + cena +
+                ", poc_ks=" + poc_ks +
+                ", tovar=" + tovar +
+                '}';
     }
 }

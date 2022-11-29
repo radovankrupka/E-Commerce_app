@@ -38,6 +38,9 @@
                             <input type="hidden" name="operacia" value="login">
                             <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
 
+
+                            <button class="btn btn-outline-light btn-lg px-5" href="Register">Register</button>
+
                            <%--
                             <input type="submit" class="btn btn-outline-light btn-lg px-5" value="LogiN">--%>
 

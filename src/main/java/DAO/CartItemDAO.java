@@ -3,8 +3,11 @@ package DAO;
 import config.DBConnection;
 import model.CartItem;
 import model.Tovar;
+import model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartItemDAO {
 
@@ -14,14 +17,17 @@ public class CartItemDAO {
         try{
             Connection con = DBConnection.getConnection();
 
-            if (itemIsInCart(tovar)) {
-                if ( enoughItemsInStore(tovar.getId(), numOfItems) ) {
-                    String sql = "UPDATE kosik SET ks = ks + " + numOfItems + " WHERE id =" + tovar.getId();
+            if (itemIsInCart(tovar)) {  //ak je tovar tohto typu uz v kosiku
+                if ( enoughItemsInStore(tovar.getId(), numOfItems) ) {  //skontroluj dostatocny pocet na sklade
+                    System.out.println("sklad ma dost");
+                    String sql = "UPDATE kosik SET ks = ks + " + numOfItems + " WHERE id_tovaru =" + tovar.getId();
                     Statement stmt = con.createStatement();
                     stmt.executeUpdate(sql);
                 }
+                else {
+                    System.out.println("sklad ma malo");
+                }
             } else {
-
 
                 String sql = "INSERT INTO kosik (ID_pouz,ID_tovaru,cena,ks) values (?,?,?,?)";
 
@@ -43,7 +49,7 @@ public class CartItemDAO {
 
     private static boolean enoughItemsInStore(int id, int numOfItems) {
 
-        if (getCartItem(id).getPoc_ks() + numOfItems < TovarDAO.getNumInStore(id)) return true;
+        if (getCartItem(id).getPoc_ks() + numOfItems <= TovarDAO.getNumInStore(id)) return true;
             else return false;
 
 
@@ -95,6 +101,42 @@ public class CartItemDAO {
 
 
         }catch(Exception e){e.printStackTrace(); return false;}
+
+
+    }
+
+    public static List<CartItem> getAllProductsFromCart(User user){  // to redo
+
+        List<CartItem> tovarList = new ArrayList<>();
+
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "select * FROM kosik WHERE ID_pouz =" + user.getId();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next() ) {
+
+                CartItem item = new CartItem();
+                item.setId(rs.getInt("ID"));
+                item.setId_pouz(rs.getInt("ID_pouz"));
+                item.setId_tovaru(rs.getInt("ID_tovaru"));
+                item.setCena(rs.getDouble("cena"));
+                item.setPoc_ks(rs.getInt("ks"));   //pocet ks v kosiku
+                tovarList.add(item);
+                System.out.println("pridavam do listu:" + item);
+            }
+
+            rs.close();
+            stmt.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return tovarList;
+        }
+        return tovarList;
 
 
     }

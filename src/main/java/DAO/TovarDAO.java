@@ -2,6 +2,7 @@ package DAO;
 
 import config.DBConnection;
 import model.Tovar;
+import model.User;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -49,7 +50,7 @@ public class TovarDAO {
         }
 
 
-    public static Tovar getItemById(String itemToAddId) {
+    public static Tovar getItemById(int itemToAddId) {
             Tovar item = new Tovar();
 
         try {
@@ -101,4 +102,8 @@ public class TovarDAO {
 
 
     }
+
+
+
+
 }

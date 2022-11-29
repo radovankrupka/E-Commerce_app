@@ -51,6 +51,12 @@
 </form>
 
 
+<form action="cart" class="d-flex justify-content-center align-items-center" >
+    <input type="hidden" name="operacia" value="logout">
+    <input type="submit" value="CHECK CART" class="btn btn-primary btn-lg btn-block">
+</form>
+
+
 
 </body>
 </html>

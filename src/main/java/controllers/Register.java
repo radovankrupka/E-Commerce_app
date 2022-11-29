@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @WebServlet("/AddItem")
-public class AddItem extends HttpServlet {
+public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -31,18 +31,9 @@ public class AddItem extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
+        //ak mam attribut registerComplete pokus sa vytvorit uzivatela
+        //inak odosli register.jsp
 
 
-        if (session.getAttribute("user") != null){
-            System.out.println("pridavam tovar " +request.getParameter("itemToAddId"));
-
-            Tovar tovar = TovarDAO.getItemById(Integer.parseInt(request.getParameter("itemToAddId")));
-            User user = (User) session.getAttribute("user");
-
-                 CartItemDAO.addItemToCart(tovar, user.getId(), Integer.parseInt(request.getParameter("numOfItems")) );
-
-        }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("home");
-        dispatcher.forward(request,response);
     }
 }

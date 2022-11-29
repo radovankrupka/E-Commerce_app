@@ -27,16 +27,14 @@ public class Home extends HttpServlet {
         String operacia = request.getParameter("operacia");
 
 
-        if ( session.getAttribute("user") != null   ) {//user uz je v session = je prihlaseny
+        if ( session.getAttribute("user") != null && operacia == null  ) {//user uz je v session = je prihlaseny, nechce nic konkretne
 
             System.out.println("zobraz main page");
             zobrazMainPage(session, request, response);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
-            dispatcher.forward(request,response);
 
         }
 
-        if ( session.getAttribute("user") == null && operacia.equals("login")  ) {
+        if ( session.getAttribute("user") == null ) { //ak nemam usera, musi sa prihlasit
 
             if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"))) { //over credentials
 
@@ -44,32 +42,100 @@ public class Home extends HttpServlet {
                 session.setAttribute("user", user);
 
                 System.out.println("uspesne prihlasenie, zobraz main page");
+                operacia = null;
+                request.removeAttribute("operacia");
                 zobrazMainPage(session, request, response);
 
 
 
             }
             else {  //nespravne credentials
-
+                System.out.println("neopravneny vstup, prihlas sa");
                 zobrazLoginPage(request,response);
 
             }
 
         }
 
-        if ( session.getAttribute("user") == null && operacia == null  ) { // neopravneny pristup
+        if (session.getAttribute("user") != null && operacia.equals("logout")){ //mam usera, chcem sa odhlasit
 
-            zobrazLoginPage(request,response);
+            System.out.println("idem odhlasit");
+            odhlasUsera(request,response);
 
         }
 
 
+ /*//nie som lognuty, nechcem sa lognut
+        if (operacia == null && session.getAttribute("user") == null  ) {
+            System.out.println("CHYBA, OPERACIA = null");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
+        }
+
+        //som lognuty, chcem zobrazit stranku
+*//*
+        if (UserDAO.checkIfUserExists(   ((User)session.getAttribute("user") ).getLogin(),((User)session.getAttribute("user") ).getPwd()   )){
+*//*
+            if (session.getAttribute("user") != null){
+
+            List<Tovar> tovarList =  TovarDAO.getAllProducts();
+            tovarList.stream().forEach(System.out::println);
+            request.getSession().setAttribute("tovarList", tovarList);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
+            dispatcher.forward(request,response);
+
+        }
+
+        //nie som lognuty, chcem sa lognut
+        if (operacia.equals("login") && session.getAttribute("user") == null ) {// toto tereba poriesit
+            System.out.println("email : " + request.getParameter("email") + " heslo :  " + request.getParameter("password"));
+            if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"))){
+                // USPESNE PRIHLASENIE
+                User user = UserDAO.getUserByLogin(request.getParameter("email"));
+                session.setAttribute("user", user);
+
+                List<Tovar> tovarList =  TovarDAO.getAllProducts();
+                tovarList.stream().forEach(System.out::println);
+                request.getSession().setAttribute("tovarList", tovarList);
+
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
+                dispatcher.forward(request,response);
+
+            } else { //prihlasenie nevyslo / zle data
+                //wrong credentials
+                System.out.println("wrong cred + |" + operacia + "|");
+                System.out.println("|" + request.getParameter("email") + "|" + request.getParameter("password")+"|");
+                session.invalidate();
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request,response);
+            }
+        }
+
+
+
+            // chcem sa odhlasit
+        if (operacia != null && operacia.equals("logout")){
+            request.getSession().invalidate();
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
+        }
+
+        System.out.println("nic?");*/
+
+
+    }
+
+    private void odhlasUsera(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        request.getSession().invalidate();
+        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        dispatcher.forward(request,response);
 
     }
 
     private void zobrazLoginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("neopravneny vstup, prihlas sa");
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         dispatcher.forward(request,response);
     }
@@ -79,6 +145,10 @@ public class Home extends HttpServlet {
         List<Tovar> tovarList =  TovarDAO.getAllProducts();
         tovarList.stream().forEach(System.out::println);
         session.setAttribute("tovarList", tovarList);
+
+        System.out.println(session.getAttribute("exception"));
+
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
         dispatcher.forward(request, response);
 
