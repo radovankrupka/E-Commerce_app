@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class Home extends HttpServlet {
     @Override
@@ -26,10 +24,46 @@ public class Home extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-
         String operacia = request.getParameter("operacia");
 
-        //nie som lognuty, nechcem sa lognut
+
+        if ( session.getAttribute("user") != null   ) {//user uz je v session = je prihlaseny
+
+            System.out.println("zobraz main page");
+            zobrazMainPage(session, request, response);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
+            dispatcher.forward(request,response);
+
+        }
+
+        if ( session.getAttribute("user") == null && operacia.equals("login")  ) {
+
+            if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"))) { //over credentials
+
+                User user = UserDAO.getUserByLogin(request.getParameter("email"));
+                session.setAttribute("user", user);
+
+                System.out.println("uspesne prihlasenie, zobraz main page");
+                zobrazMainPage(session, request, response);
+
+
+
+            }
+            else {  //nespravne credentials
+
+                zobrazLoginPage(request,response);
+
+            }
+
+        }
+
+        if ( session.getAttribute("user") == null && operacia == null  ) { // neopravneny pristup
+
+            zobrazLoginPage(request,response);
+
+        }
+
+        /*//nie som lognuty, nechcem sa lognut
         if (operacia == null && session.getAttribute("user") == null  ) {
             System.out.println("CHYBA, OPERACIA = null");
             RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
@@ -37,9 +71,9 @@ public class Home extends HttpServlet {
         }
 
         //som lognuty, chcem zobrazit stranku
-/*
+*//*
         if (UserDAO.checkIfUserExists(   ((User)session.getAttribute("user") ).getLogin(),((User)session.getAttribute("user") ).getPwd()   )){
-*/
+*//*
             if (session.getAttribute("user") != null){
 
             List<Tovar> tovarList =  TovarDAO.getAllProducts();
@@ -85,6 +119,25 @@ public class Home extends HttpServlet {
             dispatcher.forward(request,response);
         }
 
-        System.out.println("nic?");
+        System.out.println("nic?");*/
+
+
+    }
+
+    private void zobrazLoginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("neopravneny vstup, prihlas sa");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        dispatcher.forward(request,response);
+    }
+
+    private void zobrazMainPage(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        List<Tovar> tovarList =  TovarDAO.getAllProducts();
+        tovarList.stream().forEach(System.out::println);
+        session.setAttribute("tovarList", tovarList);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
+        dispatcher.forward(request, response);
+
     }
 }
