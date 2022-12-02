@@ -10,9 +10,8 @@
 <body>
 
 
-nakupny kosik
-
-
+<h2> Your Cart
+</h2>
 <table id = "data" class="table table-primary table-hover">
     <tr>
         <th>Nazov</th>
@@ -26,16 +25,16 @@ nakupny kosik
 
     <c:forEach items="${cartItems}" var="cartItem">
         <tr>
-            <td>${cartItem.tovar.nazov}</td>
-            <td>${cartItem.tovar.cena}</td>
+            <td>${cartItem.article.nazov}</td>
+            <td>${cartItem.article.cena}</td>
             <td>${cartItem.poc_ks}</td>
-            <td>${cartItem.poc_ks * cartItem.tovar.cena} EUR</td>
+            <td>${cartItem.poc_ks * cartItem.article.cena} EUR</td>
 
 
-         <%--   <td>
+         <%--   <td>   PRIDAT VYMAZANIE ITEMU Z KOSIKA
                 <form action="AddItem">
-                    <input type="hidden" name="itemToAddId" value="${tovar.id}">
-                    <input type="number" name="numOfItems" max = "${tovar.ks}" min="1" value="1">
+                    <input type="hidden" name="itemToAddId" value="${article.id}">
+                    <input type="number" name="numOfItems" max = "${article.ks}" min="1" value="1">
                     <input type="submit" value="Add to cart" class="btn btn-success btn-sm">
                 </form>
             </td>--%>
@@ -50,7 +49,7 @@ nakupny kosik
     <input type="submit" value="POKRACOVAT V NAKUPE" class="btn btn-primary btn-lg btn-block">
 </form>
 
-<form action="home" class="d-flex justify-content-center align-items-center" >
+<form action="SendOrder" class="d-flex justify-content-center align-items-center" >
     <input type="submit" value="ODOSLAT OBJEDNAVKU" class="btn btn-primary btn-lg btn-block">
 </form>
 

@@ -1,11 +1,7 @@
 package controllers;
 
 
-import DAO.CartItemDAO;
-import DAO.TovarDAO;
 import DAO.UserDAO;
-import model.CartItem;
-import model.Tovar;
 import model.User;
 
 import javax.servlet.RequestDispatcher;
@@ -16,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-
+@WebServlet("/register")
 public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,16 +25,43 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+        String operacia = request.getParameter("operacia");
+        Map<String, String> messages = new HashMap<>();
+        request.setAttribute("messages", messages);
 
-        //ak mam attribut registerComplete pokus sa vytvorit uzivatela
-        //inak odosli register.jsp
+        if (operacia == null && session.getAttribute("user") == null ) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+            dispatcher.forward(request, response);
+        }
 
-        System.out.println("odosielam do register.jsp");
+        if (operacia != null && operacia.equals("register") && session.getAttribute("user") == null) {
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
-        dispatcher.forward(request,response);
+            if (UserDAO.checkUserByLogin(request.getParameter("email"))) { // uzivatel s danym emailom uz existuje
+                messages.put("error", "Chyba -> Pouzivatel s tymto emailom uz existuje!");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+                dispatcher.forward(request, response);
 
+            }
+            else {
 
+                User user = new User();
 
+                user.setLogin(request.getParameter("email"));
+                user.setPwd(request.getParameter("password"));
+                user.setAdresa(request.getParameter("address"));
+                user.setJe_admin(false);
+                user.setMeno(request.getParameter("surrname"));
+                user.setPriezvisko("last_name");
+                user.setZlava(15);
+
+                UserDAO.createUser(user);
+
+                user.setId(UserDAO.getUserByLogin(user.getLogin()).getId()); //nastavim objektu usera ID z db, ktore mu bolo pridelene
+
+                session.setAttribute("user",user);
+
+                response.sendRedirect("home");
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ public class User {
     private int zlava;
     private String meno;
     private String priezvisko;
-    private String poznamky;
+    private String poznamky = "";
     private boolean je_admin;
 
     public int getId() {

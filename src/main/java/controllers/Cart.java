@@ -1,9 +1,8 @@
 package controllers;
 
 import DAO.CartItemDAO;
-import DAO.TovarDAO;
+import DAO.ArticleDAO;
 import model.CartItem;
-import model.Tovar;
 import model.User;
 
 import javax.servlet.RequestDispatcher;
@@ -31,7 +30,7 @@ public class Cart extends HttpServlet {
         if (session.getAttribute("user") != null){
             System.out.println("zobrazujem kosik pre pouzivatela" + session.getAttribute("user").toString());
 
-            //ziskaj vsetky Tovar - i z tab. kosik kde id_usera == session.user.id
+            //ziskaj vsetky Article - i z tab. kosik kde id_usera == session.user.id
 
             User currentUser = (User) session.getAttribute("user");
 
@@ -39,12 +38,12 @@ public class Cart extends HttpServlet {
             list = CartItemDAO.getAllProductsFromCart(currentUser);  //sem sa itemy dostanu
 
 
-            //napln cart itemy objektami Tovar pre kazdy typ tovvaru
-            list.stream().forEach(cartItem -> cartItem.setTovar(TovarDAO.getItemById(cartItem.getId_tovaru())));
+            //napln cart itemy objektami Article pre kazdy typ tovvaru
+            list.stream().forEach(cartItem -> cartItem.setArticle(ArticleDAO.getItemById(cartItem.getId_tovaru())));
 
-            /*List<Tovar> tovarList = new ArrayList<>();
+            /*List<Article> tovarList = new ArrayList<>();
 
-            list.stream().forEach(cartItem -> tovarList.add(TovarDAO.getItemById(cartItem.getId_tovaru())));*/
+            list.stream().forEach(cartItem -> tovarList.add(ArticleDAO.getItemById(cartItem.getId_tovaru())));*/
 
             list.stream().forEach(cartItem -> toString());
 

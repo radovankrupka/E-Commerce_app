@@ -1,6 +1,6 @@
 package model;
 
-public class Tovar {
+public class Article {
 
     private int id;
     private String nazov;
@@ -42,7 +42,7 @@ public class Tovar {
 
     @Override
     public String toString() {
-        return "Tovar{" +
+        return "Article{" +
                 "nazov='" + nazov + '\'' +
                 ", ks=" + ks +
                 ", cena=" + cena +

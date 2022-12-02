@@ -1,9 +1,7 @@
 package controllers;
 
-
-import DAO.CartItemDAO;
-import DAO.ArticleDAO;
-import model.Article;
+import DAO.OrderDAO;
+import DAO.OrderItemDAO;
 import model.User;
 
 import javax.servlet.RequestDispatcher;
@@ -15,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+@WebServlet("/DeleteOrder")
+public class DeleteOrder extends HttpServlet {
 
-@WebServlet("/AddItem")
-public class AddItem extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -26,19 +24,19 @@ public class AddItem extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null && ((User) session.getAttribute("user")).isJe_admin()) {
 
+            int orderID = Integer.parseInt(request.getParameter("deleteID"));
 
+            OrderDAO.deleteOrderById(orderID);
 
-        if (session.getAttribute("user") != null){
-            System.out.println("pridavam article " +request.getParameter("itemToAddId"));
+            OrderItemDAO.deleteOrderItemsByOrderId(orderID);
 
-            Article article = ArticleDAO.getItemById(Integer.parseInt(request.getParameter("itemToAddId")));
-            User user = (User) session.getAttribute("user");
-
-                 CartItemDAO.addItemToCart(article, user.getId(), Integer.parseInt(request.getParameter("numOfItems")) );
+            RequestDispatcher dispatcher = request.getRequestDispatcher("ManageOrders");
+            dispatcher.forward(request,response);
 
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("home");
-        dispatcher.forward(request,response);
     }
+
+
 }

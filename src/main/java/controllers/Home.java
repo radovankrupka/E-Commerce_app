@@ -1,13 +1,14 @@
 package controllers;
 
 
-import DAO.TovarDAO;
+import DAO.ArticleDAO;
 import DAO.UserDAO;
-import model.Tovar;
+import model.Article;
 import model.User;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet("/main")
 public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,10 +29,16 @@ public class Home extends HttpServlet {
         String operacia = request.getParameter("operacia");
 
 
-        if ( session.getAttribute("user") != null && operacia == null  ) {//user uz je v session = je prihlaseny, nechce nic konkretne
+        if ( session.getAttribute("user") != null && operacia == null && (!((User)session.getAttribute("user")).isJe_admin()) ) {//user uz je v session = je prihlaseny, nechce nic konkretne
 
             System.out.println("zobraz main page");
             zobrazMainPage(session, request, response);
+
+        }
+        if ( session.getAttribute("user") != null && operacia == null && ((User)session.getAttribute("user")).isJe_admin() ) {//user uz je v session = je prihlaseny, nechce nic konkretne
+
+            System.out.println("zobraz admin page");
+            zobrazAdminPage(request, response);
 
         }
 
@@ -44,7 +52,13 @@ public class Home extends HttpServlet {
                 System.out.println("uspesne prihlasenie, zobraz main page");
                 operacia = null;
                 request.removeAttribute("operacia");
-                zobrazMainPage(session, request, response);
+
+                if ((!((User)session.getAttribute("user")).isJe_admin()))
+                    zobrazMainPage(session, request, response);
+                else {
+                    //zobraz admin page
+                    zobrazAdminPage(request, response);
+                }
 
 
 
@@ -64,66 +78,11 @@ public class Home extends HttpServlet {
 
         }
 
+    }
 
- /*//nie som lognuty, nechcem sa lognut
-        if (operacia == null && session.getAttribute("user") == null  ) {
-            System.out.println("CHYBA, OPERACIA = null");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-            dispatcher.forward(request,response);
-        }
-
-        //som lognuty, chcem zobrazit stranku
-*//*
-        if (UserDAO.checkIfUserExists(   ((User)session.getAttribute("user") ).getLogin(),((User)session.getAttribute("user") ).getPwd()   )){
-*//*
-            if (session.getAttribute("user") != null){
-
-            List<Tovar> tovarList =  TovarDAO.getAllProducts();
-            tovarList.stream().forEach(System.out::println);
-            request.getSession().setAttribute("tovarList", tovarList);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
-            dispatcher.forward(request,response);
-
-        }
-
-        //nie som lognuty, chcem sa lognut
-        if (operacia.equals("login") && session.getAttribute("user") == null ) {// toto tereba poriesit
-            System.out.println("email : " + request.getParameter("email") + " heslo :  " + request.getParameter("password"));
-            if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"))){
-                // USPESNE PRIHLASENIE
-                User user = UserDAO.getUserByLogin(request.getParameter("email"));
-                session.setAttribute("user", user);
-
-                List<Tovar> tovarList =  TovarDAO.getAllProducts();
-                tovarList.stream().forEach(System.out::println);
-                request.getSession().setAttribute("tovarList", tovarList);
-
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/home-page.jsp");
-                dispatcher.forward(request,response);
-
-            } else { //prihlasenie nevyslo / zle data
-                //wrong credentials
-                System.out.println("wrong cred + |" + operacia + "|");
-                System.out.println("|" + request.getParameter("email") + "|" + request.getParameter("password")+"|");
-                session.invalidate();
-                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-                dispatcher.forward(request,response);
-            }
-        }
-
-
-
-            // chcem sa odhlasit
-        if (operacia != null && operacia.equals("logout")){
-            request.getSession().invalidate();
-            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-            dispatcher.forward(request,response);
-        }
-
-        System.out.println("nic?");*/
-
-
+    private void zobrazAdminPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/admin-page.jsp");
+        dispatcher.forward(request,response);
     }
 
     private void odhlasUsera(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -142,9 +101,9 @@ public class Home extends HttpServlet {
 
     private void zobrazMainPage(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Tovar> tovarList =  TovarDAO.getAllProducts();
-        tovarList.stream().forEach(System.out::println);
-        session.setAttribute("tovarList", tovarList);
+        List<Article> articleList =  ArticleDAO.getAllProducts();
+        articleList.stream().forEach(System.out::println);
+        session.setAttribute("articleList", articleList);
 
         System.out.println(session.getAttribute("exception"));
 

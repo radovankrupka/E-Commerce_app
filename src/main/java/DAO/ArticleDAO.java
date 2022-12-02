@@ -1,8 +1,7 @@
 package DAO;
 
 import config.DBConnection;
-import model.Tovar;
-import model.User;
+import model.Article;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,12 +10,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TovarDAO {
+public class ArticleDAO {
 
 
-        public static List<Tovar> getAllProducts(){
+        public static List<Article> getAllProducts(){
 
-            List<Tovar> tovarList = new ArrayList<>();
+            List<Article> articleList = new ArrayList<>();
 
             try {
 
@@ -27,14 +26,14 @@ public class TovarDAO {
 
                 while (rs.next() ) {
 
-                    Tovar item = new Tovar();
+                    Article item = new Article();
                     item.setId(rs.getInt("id"));
                     item.setNazov(rs.getString("nazov"));
                     item.setCena(rs.getDouble("cena"));
                     item.setKs(rs.getInt("ks"));
                     item.toString();
 
-                    tovarList.add(item);
+                    articleList.add(item);
                 }
 
                 rs.close();
@@ -42,16 +41,16 @@ public class TovarDAO {
             }
             catch (SQLException e) {
                 e.printStackTrace();
-                return tovarList;
+                return articleList;
             }
-            return tovarList;
+            return articleList;
 
 
         }
 
 
-    public static Tovar getItemById(int itemToAddId) {
-            Tovar item = new Tovar();
+    public static Article getItemById(int itemToAddId) {
+            Article item = new Article();
 
         try {
 
@@ -79,13 +78,13 @@ public class TovarDAO {
         return item;
     }
 
-    public static int getNumInStore(int id) {
+    public static int getNumInStore(int article_id) {
         int pocet = 0;
         try {
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
-            String sql = "select ks FROM sklad WHERE id = " + id;
+            String sql = "select ks FROM sklad WHERE id = " + article_id;
             ResultSet rs = stmt.executeQuery(sql);
 
             rs.next();

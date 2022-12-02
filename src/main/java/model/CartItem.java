@@ -1,7 +1,5 @@
 package model;
 
-import DAO.TovarDAO;
-
 public class CartItem {
 
     private int id;
@@ -10,14 +8,14 @@ public class CartItem {
     private double cena;
     private int poc_ks;
 
-    private Tovar tovar;
+    private Article article;
 
-    public Tovar getTovar() {
-        return tovar;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setTovar(Tovar tovar) {
-        this.tovar = tovar;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public int getId() {
@@ -68,7 +66,11 @@ public class CartItem {
                 ", id_tovaru=" + id_tovaru +
                 ", cena=" + cena +
                 ", poc_ks=" + poc_ks +
-                ", tovar=" + tovar +
+                ", article=" + article +
                 '}';
+    }
+
+    public double getCenaCelkovo(){
+        return this.cena * this.poc_ks;
     }
 }
