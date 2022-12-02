@@ -1,8 +1,6 @@
 package controllers;
 
-import DAO.OrderDAO;
 import DAO.UserDAO;
-import model.Order;
 import model.User;
 
 import javax.servlet.RequestDispatcher;
@@ -13,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-@WebServlet("/ManageUsers")
-public class ManageUsers extends HttpServlet {
+@WebServlet("/UpdateUser")
+public class UpdateUser extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,11 +26,22 @@ public class ManageUsers extends HttpServlet {
 
         if (session.getAttribute("user") != null && ((User) session.getAttribute("user")).isJe_admin()) {
 
-            List<User> userList = new ArrayList<>();
-            userList = UserDAO.getAllUsers();
-            request.setAttribute("userList",userList);
+           if (request.getParameter("action") != null && request.getParameter("action").equals("changeRole")){
+               int userID = Integer.parseInt(request.getParameter("userID"));
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user-manage.jsp");
+               UserDAO.changeUserRole(userID);
+
+           }
+           if (request.getParameter("action") != null && request.getParameter("action").equals("updateDisc")){
+               int userID = Integer.parseInt(request.getParameter("userID"));
+               int discount = Integer.parseInt(request.getParameter("userDisc"));
+
+              UserDAO.updateDiscount(userID,discount);
+
+
+           }
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("ManageUsers");
             dispatcher.forward(request,response);
 
 

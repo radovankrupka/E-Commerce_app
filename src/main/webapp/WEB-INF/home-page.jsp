@@ -38,13 +38,6 @@
 
 </table>
 
-
-<form action="home" class="d-flex justify-content-center align-items-center" >
-    <input type="hidden" name="operacia" value="logout">
-    <input type="submit" value="LOGOUT" class="btn btn-primary btn-lg btn-block">
-</form>
-
-
 <form action="cart" class="d-flex justify-content-center align-items-center" >
     <input type="hidden" name="operacia" value="logout">
     <input type="submit" value="CHECK CART" class="btn btn-primary btn-lg btn-block">
@@ -54,6 +47,10 @@
     <input type="submit" value="MY ORDERS" class="btn btn-secondary btn-warning btn-lg btn-block">
 </form>
 
+<form action="home" class="d-flex justify-content-center align-items-center" >
+    <input type="hidden" name="operacia" value="logout">
+    <input type="submit" value="LOGOUT" class="btn btn-primary btn-sm btn-danger btn-block">
+</form>
 
 
 </body>

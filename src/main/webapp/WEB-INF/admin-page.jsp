@@ -9,7 +9,7 @@
 
 <br/> <br/>
 
-<h1> ADMIN CONSOLE</h1>
+<h1 class="d-flex justify-content-center align-items-center" > ADMIN CONSOLE</h1>
 
 
 <form action="ManageOrders" class="d-flex justify-content-center align-items-center" >
@@ -20,5 +20,9 @@
   <input type="submit" value="MANAGE USERS" class="btn btn-secondary btn-warning btn-lg btn-block">
 </form>
 
+<form action="home" class="d-flex justify-content-center align-items-center" >
+  <input type="hidden" name="operacia" value="logout">
+  <input type="submit" value="LOGOUT" class="btn btn-primary btn-sm btn-danger btn-block">
+</form>
 </body>
 </html>

@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Radko
-  Date: 2 Dec 2022
-  Time: 20:05
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -13,7 +7,7 @@
 </head>
 <body>
 
-<h1>
+<h1 class="d-flex justify-content-center align-items-center">
     Thank you for your order!
 </h1>
 

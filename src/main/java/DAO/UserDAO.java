@@ -1,7 +1,6 @@
 package DAO;
 
 import config.DBConnection;
-import model.OrderItem;
 import model.User;
 
 import java.sql.*;
@@ -200,5 +199,35 @@ public class UserDAO {
     }
 
 
+    public static void changeUserRole(int userID) {
 
+        try{
+            Connection con = DBConnection.getConnection();
+
+            String sql = "UPDATE users SET je_admin = NOT je_admin WHERE ID = " + userID;
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+
+
+            con.close();
+
+        }catch(Exception e){e.printStackTrace();}
+
+    }
+
+    public static void updateDiscount(int userID, int discount) {
+
+        try{
+            Connection con = DBConnection.getConnection();
+
+            String sql = "UPDATE users SET zlava = " + discount + " WHERE ID = " + userID;
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+
+
+            con.close();
+
+        }catch(Exception e){e.printStackTrace();}
+
+    }
 }

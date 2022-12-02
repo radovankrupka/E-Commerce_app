@@ -10,7 +10,7 @@
 <body>
 
 
-<h2> Your Cart
+<h2 class="d-flex justify-content-center align-items-center" > Your Cart
 </h2>
 <table id = "data" class="table table-primary table-hover">
     <tr>
@@ -46,11 +46,11 @@
 </table>
 
 <form action="home" class="d-flex justify-content-center align-items-center" >
-    <input type="submit" value="POKRACOVAT V NAKUPE" class="btn btn-primary btn-lg btn-block">
+    <input type="submit" value="CONTINUE SHOPPING" class="btn btn-primary btn-lg btn-block">
 </form>
 
 <form action="SendOrder" class="d-flex justify-content-center align-items-center" >
-    <input type="submit" value="ODOSLAT OBJEDNAVKU" class="btn btn-primary btn-lg btn-block">
+    <input type="submit" value="CONFIRM ORDER" class="btn btn-primary btn-warning btn-block">
 </form>
 
 

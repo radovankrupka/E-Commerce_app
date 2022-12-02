@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<h2> Orders of all users
+<h2 class="d-flex justify-content-center align-items-center"> Orders of all users
 </h2>
 
 
