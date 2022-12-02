@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@WebServlet("/AddItem")
 public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,6 +32,12 @@ public class Register extends HttpServlet {
 
         //ak mam attribut registerComplete pokus sa vytvorit uzivatela
         //inak odosli register.jsp
+
+        System.out.println("odosielam do register.jsp");
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+        dispatcher.forward(request,response);
+
 
 
     }
