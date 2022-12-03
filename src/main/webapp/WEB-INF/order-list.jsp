@@ -10,8 +10,11 @@
 <h2 class="d-flex justify-content-center align-items-center"> Your Orders
 </h2>
 
+<br/>
 
-
+<form action="home" class="d-flex justify-content-center align-items-center" >
+    <input type="submit" value="CONTINUE SHOPPING" class="btn btn-primary btn-lg btn-block">
+</form>
 
 <c:forEach items="${orderList}" var="order">
     <table id = "${order.id}" class="table table-primary table-hover mx-auto w-75">
@@ -29,6 +32,7 @@
 
     <tr>
         <th>Article</th>
+        <th></th>
         <th>Price per piece</th>
         <th>Num. bought</th>
         <th>Sum per article</th>
@@ -38,6 +42,7 @@
 
         <tr>
             <td>${orderItem.tovar.nazov}</td>
+            <td><img src="${pageContext.request.contextPath}/images/${orderItem.tovar.id}.png" height="50"/></td>
             <td>${orderItem.cena_kus} EUR</td>
             <td>${orderItem.poc_ks}</td>
             <td>${orderItem.cena_spolu} EUR</td>
@@ -50,8 +55,5 @@
 </c:forEach>
 
 
-<form action="home" class="d-flex justify-content-center align-items-center" >
-    <input type="submit" value="CONTINUE SHOPPING" class="btn btn-primary btn-lg btn-block">
-</form>
 </body>
 </html>

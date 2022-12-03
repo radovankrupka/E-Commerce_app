@@ -46,11 +46,12 @@ public class Home extends HttpServlet {
 
         if ( session.getAttribute("user") == null ) { //ak nemam usera, musi sa prihlasit
 
+            DBConnection.createConnection(session);
+
             if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"),session)) { //over credentials
 
                 User user = UserDAO.getUserByLogin(request.getParameter("email"),session);
                 session.setAttribute("user", user);
-                DBConnection.createConnection(session);
 
                 System.out.println("uspesne prihlasenie, zobraz main page");
                 operacia = null;
@@ -76,6 +77,7 @@ public class Home extends HttpServlet {
 
         if (session.getAttribute("user") != null && operacia.equals("logout")){ //mam usera, chcem sa odhlasit
 
+            //ODHLASENIE + UVOLNENIE PROSTRIEDKOV DB
             System.out.println("idem odhlasit");
             try {
                 odhlasUsera(request,response,session);

@@ -32,9 +32,9 @@
                             </div>
 
                             <p class="small mb-5 pb-lg-2">
-                                Janko123  | pouz1 <br>
-                                Ferko123  | pouz2 <br>
-                                Martin123 | pouz3 <br></p>
+                                USER: t@t.sk  | 123 <br>
+                                USER: r@r.sk  | 123 <br>
+                               ADMIN: a@a.sk  | 123 <br></p>
 
                             <input type="hidden" name="operacia" value="login">
                             <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
