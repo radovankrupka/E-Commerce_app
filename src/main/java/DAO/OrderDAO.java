@@ -18,8 +18,8 @@ public class OrderDAO {
 
         //pridaj objednavke tovar z kosika
         try{
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+
             String sql = "INSERT INTO obj_polozky (ID_objednavky,ID_tovaru,cena,ks) values (?,?,?,?)";
 
 
@@ -27,7 +27,7 @@ public class OrderDAO {
 
                 PreparedStatement preparedStmt = null;
                 try {
-                    preparedStmt = con.prepareStatement(sql);
+                    preparedStmt = DBConnection.getConnection(session).prepareStatement(sql);
                     preparedStmt.setInt(1, orderID);
                     preparedStmt.setInt(2, cartItem.getArticle().getId());
                     preparedStmt.setDouble(3, cartItem.getCena());
@@ -39,7 +39,6 @@ public class OrderDAO {
                 }
             });
 
-            con.close();
 
         }catch(Exception e){e.printStackTrace();}
     }
@@ -55,14 +54,11 @@ public class OrderDAO {
         int newID = 0;
 
         try{
-            Connection con = DBConnection.getConnection();
+
 
             String sql = "INSERT INTO objednavky (datum_obj,ID_pouz,suma,stav) values (?,?,?,?)";
-            Statement stmt = con.createStatement();
 
-
-
-            PreparedStatement preparedStmt = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStmt = DBConnection.getConnection(session).prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setTimestamp(1, date);
             preparedStmt.setInt(2, ((User)session.getAttribute("user")).getId() );
             preparedStmt.setDouble(3, suma);
@@ -80,18 +76,18 @@ public class OrderDAO {
             }
 
 
-            con.close();
+
 
         }catch(Exception e){e.printStackTrace();}
 
         return newID;
     }
 
-    private static int getOrderID(Timestamp date, double suma) {
+    private static int getOrderID(Timestamp date, double suma, HttpSession session) {
             int ID = 0;
         try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
 
             String sql = "SELECT ID FROM objednavky WHERE datum_obj = '" + date + "' AND suma = '" + suma + "'";
 
@@ -109,18 +105,18 @@ public class OrderDAO {
         return ID;
     }
 
-    public static void decreaseStockCount(List<CartItem> cartItems) {
+    public static void decreaseStockCount(List<CartItem> cartItems, HttpSession session) {
         try{
-            Connection con = DBConnection.getConnection();
+
 
 
             for (CartItem cartItem: cartItems) {
             String sql = "UPDATE sklad SET ks = ks - " + cartItem.getPoc_ks() + " WHERE ID =" + cartItem.getArticle().getId();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             stmt.executeUpdate(sql);
             }
 
-            con.close();
+
 
         }catch(Exception e){e.printStackTrace();}
 
@@ -135,8 +131,7 @@ public class OrderDAO {
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "select * FROM objednavky WHERE ID_pouz = " + userID;
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -149,13 +144,13 @@ public class OrderDAO {
                 order.setCelkova_suma(rs.getDouble("suma"));
                 order.setStav(rs.getString("stav"));
 
-                order.setOrderItems(OrderItemDAO.getAllOrderItemsOfOrder(order.getId()));
+                order.setOrderItems(OrderItemDAO.getAllOrderItemsOfOrder(order.getId(),session));
 
                 orderList.add(order);
             }
 
             rs.close();
-            stmt.close();
+
 
 
         }
@@ -166,14 +161,14 @@ public class OrderDAO {
         return orderList;
 
     }
-    public static List<Order> getAllOrders() {
+    public static List<Order> getAllOrders(HttpSession session) {
 
         List<Order> orderList = new ArrayList<>();
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "select * FROM objednavky";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -186,7 +181,7 @@ public class OrderDAO {
                 order.setCelkova_suma(rs.getDouble("suma"));
                 order.setStav(rs.getString("stav"));
 
-                order.setOrderItems(OrderItemDAO.getAllOrderItemsOfOrder(order.getId()));
+                order.setOrderItems(OrderItemDAO.getAllOrderItemsOfOrder(order.getId(),session));
 
                 orderList.add(order);
             }
@@ -204,11 +199,11 @@ public class OrderDAO {
 
     }
 
-    public static void deleteOrderById(int orderID) {
+    public static void deleteOrderById(int orderID,HttpSession session ) {
 
         try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "DELETE FROM objednavky WHERE ID =" + orderID;
             stmt.executeUpdate(sql);
 
@@ -223,17 +218,17 @@ public class OrderDAO {
 
     }
 
-    public static void updateOrderById(int orderID, String status) {
+    public static void updateOrderById(int orderID, String status, HttpSession session) {
 
         try{
-            Connection con = DBConnection.getConnection();
+
 
                 String sql = "UPDATE objednavky SET stav = '" + status + "' WHERE ID = " + orderID;
-                Statement stmt = con.createStatement();
+                Statement stmt = DBConnection.getConnection(session).createStatement();
                 stmt.executeUpdate(sql);
 
 
-            con.close();
+
 
         }catch(Exception e){e.printStackTrace();}
 

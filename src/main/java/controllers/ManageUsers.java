@@ -31,13 +31,16 @@ public class ManageUsers extends HttpServlet {
         if (session.getAttribute("user") != null && ((User) session.getAttribute("user")).isJe_admin()) {
 
             List<User> userList = new ArrayList<>();
-            userList = UserDAO.getAllUsers();
+            userList = UserDAO.getAllUsers(session);
             request.setAttribute("userList",userList);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user-manage.jsp");
             dispatcher.forward(request,response);
 
 
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 }

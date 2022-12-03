@@ -36,7 +36,7 @@ public class Register extends HttpServlet {
 
         if (operacia != null && operacia.equals("register") && session.getAttribute("user") == null) {
 
-            if (UserDAO.checkUserByLogin(request.getParameter("email"))) { // uzivatel s danym emailom uz existuje
+            if (UserDAO.checkUserByLogin(request.getParameter("email"),session)) { // uzivatel s danym emailom uz existuje
                 messages.put("error", "Chyba -> Pouzivatel s tymto emailom uz existuje!");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
                 dispatcher.forward(request, response);
@@ -54,9 +54,9 @@ public class Register extends HttpServlet {
                 user.setPriezvisko("last_name");
                 user.setZlava(15);
 
-                UserDAO.createUser(user);
+                UserDAO.createUser(user,session);
 
-                user.setId(UserDAO.getUserByLogin(user.getLogin()).getId()); //nastavim objektu usera ID z db, ktore mu bolo pridelene
+                user.setId(UserDAO.getUserByLogin(user.getLogin(),session).getId()); //nastavim objektu usera ID z db, ktore mu bolo pridelene
 
                 session.setAttribute("user",user);
 

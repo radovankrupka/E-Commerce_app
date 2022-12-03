@@ -11,7 +11,7 @@
 <h1>User Management</h1>
 
 
-<table id = "user-data" class="table table-primary table-hover">
+<table id = "user-data" class="table table-primary table-hover mx-auto w-75">
   <tr>
     <th>User ID</th>
     <th>Login</th>

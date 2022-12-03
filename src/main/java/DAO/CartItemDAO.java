@@ -13,16 +13,14 @@ import java.util.List;
 public class CartItemDAO {
 
 
-    public static void addItemToCart(Article article, int user_id, int numOfItemsToBuy) {
+    public static void addItemToCart(Article article, int user_id, int numOfItemsToBuy,HttpSession session) {
 
         try{
-            Connection con = DBConnection.getConnection();
-
-            if (itemIsInCart(article, user_id)) {  //ak je article tohto typu uz v kosiku
-                if ( enoughItemsInStore(article.getId(), numOfItemsToBuy, user_id) ) {  //skontroluj dostatocny pocet na sklade
+            if (itemIsInCart(article, user_id, session)) {  //ak je article tohto typu uz v kosiku
+                if ( enoughItemsInStore(article.getId(), numOfItemsToBuy, user_id, session) ) {  //skontroluj dostatocny pocet na sklade
                     System.out.println("sklad ma dost");
                     String sql = "UPDATE kosik SET ks = ks + " + numOfItemsToBuy + " WHERE id_tovaru =" + article.getId();
-                    Statement stmt = con.createStatement();
+                    Statement stmt = DBConnection.getConnection(session).createStatement();
                     stmt.executeUpdate(sql);
                 }
                 else {
@@ -32,7 +30,7 @@ public class CartItemDAO {
 
                 String sql = "INSERT INTO kosik (ID_pouz,ID_tovaru,cena,ks) values (?,?,?,?)";
 
-                PreparedStatement preparedStmt = con.prepareStatement(sql);
+                PreparedStatement preparedStmt = DBConnection.getConnection(session).prepareStatement(sql);
                 preparedStmt.setInt(1, user_id);
                 preparedStmt.setInt(2, article.getId());
                 preparedStmt.setDouble(3, article.getCena());
@@ -40,7 +38,7 @@ public class CartItemDAO {
 
                 preparedStmt.executeUpdate();
 
-                con.close();
+
             }
         }catch(Exception e){e.printStackTrace();}
 
@@ -48,18 +46,17 @@ public class CartItemDAO {
 
     }
 
-    public static boolean enoughItemsInStore(int article_id, int numOfItems, int user_id) {
+    public static boolean enoughItemsInStore(int article_id, int numOfItems, int user_id,HttpSession session) {
 
-        if (getCartItem(article_id,user_id).getPoc_ks() + numOfItems <= ArticleDAO.getNumInStore(getCartItem(article_id,user_id).getArticle().getId())) return true;
+        if (getCartItem(article_id,user_id,session).getPoc_ks() + numOfItems <= ArticleDAO.getNumInStore(getCartItem(article_id,user_id,session).getArticle().getId(), session)) return true;
             else return false;
 
 
     }
 
-    private static CartItem getCartItem(int article_id, int user_id) {
+    private static CartItem getCartItem(int article_id, int user_id,HttpSession session) {
         try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
 
             String sql = "SELECT * FROM kosik WHERE ID_tovaru = " + article_id + " AND ID_pouz = " + user_id;
 
@@ -70,12 +67,12 @@ public class CartItemDAO {
             CartItem item = new CartItem();
             rs.next();
 
-            item.setCena(rs.getDouble("cena"));
+
             item.setId_pouz(rs.getInt("ID_pouz"));
             item.setId_tovaru(rs.getInt("ID_tovaru"));
             item.setPoc_ks(rs.getInt("ks"));
-            item.setArticle(ArticleDAO.getItemById(article_id));
-
+            item.setArticle(ArticleDAO.getItemById(article_id,session));
+            item.setCena(item.getArticle().getCena());
 
             return item;
 
@@ -85,11 +82,11 @@ public class CartItemDAO {
         }
     }
 
-        private static boolean itemIsInCart(Article article, int user_id) {
+        private static boolean itemIsInCart(Article article, int user_id, HttpSession session) {
 
         try{
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
 
             String sql = "SELECT COUNT(*) as pocet FROM kosik WHERE ID_tovaru = '" + article.getId() + "' AND ID_pouz = " +user_id;
 
@@ -109,15 +106,14 @@ public class CartItemDAO {
 
     }
 
-    public static List<CartItem> getAllProductsFromCart(User user){  // to redo
+    public static List<CartItem> getAllProductsFromCart(User user,HttpSession session){  // to redo
 
         List<CartItem> tovarList = new ArrayList<>();
 
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "select * FROM kosik WHERE ID_pouz =" + user.getId();
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -127,9 +123,9 @@ public class CartItemDAO {
                 item.setId(rs.getInt("ID"));
                 item.setId_pouz(rs.getInt("ID_pouz"));
                 item.setId_tovaru(rs.getInt("ID_tovaru"));
-                item.setCena(rs.getDouble("cena"));
                 item.setPoc_ks(rs.getInt("ks"));   //pocet ks v kosiku
-                item.setArticle(ArticleDAO.getItemById(item.getId_tovaru()));
+                item.setArticle(ArticleDAO.getItemById(item.getId_tovaru(),session));
+                item.setCena(item.getArticle().getCena());
                 tovarList.add(item);
                 System.out.println("pridavam do listu:" + item);
             }
@@ -150,8 +146,7 @@ public class CartItemDAO {
         int userID =((User) session.getAttribute("user")).getId();
 
         try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "DELETE FROM kosik WHERE ID_pouz =" + userID;
             stmt.executeUpdate(sql);
 

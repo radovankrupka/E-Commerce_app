@@ -28,13 +28,17 @@ public class DeleteOrder extends HttpServlet {
 
             int orderID = Integer.parseInt(request.getParameter("deleteID"));
 
-            OrderDAO.deleteOrderById(orderID);
+            OrderDAO.deleteOrderById(orderID, session);
 
-            OrderItemDAO.deleteOrderItemsByOrderId(orderID);
+            OrderItemDAO.deleteOrderItemsByOrderId(orderID,session);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("ManageOrders");
             dispatcher.forward(request,response);
 
+        }
+        else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 

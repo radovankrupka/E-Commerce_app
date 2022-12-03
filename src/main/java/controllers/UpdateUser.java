@@ -29,14 +29,14 @@ public class UpdateUser extends HttpServlet {
            if (request.getParameter("action") != null && request.getParameter("action").equals("changeRole")){
                int userID = Integer.parseInt(request.getParameter("userID"));
 
-               UserDAO.changeUserRole(userID);
+               UserDAO.changeUserRole(userID,session);
 
            }
            if (request.getParameter("action") != null && request.getParameter("action").equals("updateDisc")){
                int userID = Integer.parseInt(request.getParameter("userID"));
                int discount = Integer.parseInt(request.getParameter("userDisc"));
 
-              UserDAO.updateDiscount(userID,discount);
+              UserDAO.updateDiscount(userID,discount,session);
 
 
            }
@@ -45,6 +45,9 @@ public class UpdateUser extends HttpServlet {
             dispatcher.forward(request,response);
 
 
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 }

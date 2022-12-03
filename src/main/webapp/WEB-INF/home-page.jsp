@@ -9,21 +9,29 @@
 </head>
 <body>
 
-<table id = "data" class="table table-primary table-hover">
+<h3 class="d-flex justify-content-center align-items-center" >${user.meno} ${user.priezvisko}</h3>
+
+<form action="cart" class="d-flex justify-content-center align-items-center" >
+    <input type="hidden" name="operacia" value="logout">
+    <input type="submit" value="CHECK CART" class="btn btn-primary btn-lg btn-block">
+</form>
+
+
+<table id = "data" class="table table-primary table-hover table-bordered mx-auto w-75">
     <tr>
         <th>Nazov</th>
         <th>Cena</th>
         <th>Na sklade</th>
-        <th></th><th></th><th></th>
+        <th></th>
 
     </tr>
 
 
     <c:forEach items="${articleList}" var="article">
         <tr>
-            <td>${article.nazov}</td>
-            <td>${article.cena}</td>
-            <td>${article.ks}</td>
+            <td >${article.nazov}</td>
+            <td >${article.cena} EUR </td>
+            <td >${article.ks}</td>
             <td>
                     <form action="AddItem">
                         <input type="hidden" name="itemToAddId" value="${article.id}">
@@ -37,11 +45,11 @@
 
 
 </table>
-
+<%--
 <form action="cart" class="d-flex justify-content-center align-items-center" >
     <input type="hidden" name="operacia" value="logout">
     <input type="submit" value="CHECK CART" class="btn btn-primary btn-lg btn-block">
-</form>
+</form>--%>
 
 <form action="ShowOrders" class="d-flex justify-content-center align-items-center" >
     <input type="submit" value="MY ORDERS" class="btn btn-secondary btn-warning btn-lg btn-block">
@@ -51,6 +59,7 @@
     <input type="hidden" name="operacia" value="logout">
     <input type="submit" value="LOGOUT" class="btn btn-primary btn-sm btn-danger btn-block">
 </form>
+
 
 
 </body>

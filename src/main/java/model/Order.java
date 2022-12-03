@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class Order {
+public class Order  implements Comparable<Order>{
 
     private int id;
     private String date;
@@ -58,5 +58,10 @@ public class Order {
 
     public void setStav(String stav) {
         this.stav = stav;
+    }
+
+    @Override
+    public int compareTo(Order o) {
+        return getDate().compareTo(o.getDate());
     }
 }

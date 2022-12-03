@@ -12,7 +12,7 @@
 
 <h2 class="d-flex justify-content-center align-items-center" > Your Cart
 </h2>
-<table id = "data" class="table table-primary table-hover">
+<table id = "data" class="table table-primary table-hover mx-auto w-75" >
     <tr>
         <th>Nazov</th>
         <th>Cena za ks</th>
@@ -26,7 +26,7 @@
     <c:forEach items="${cartItems}" var="cartItem">
         <tr>
             <td>${cartItem.article.nazov}</td>
-            <td>${cartItem.article.cena}</td>
+            <td>${cartItem.article.cena} EUR</td>
             <td>${cartItem.poc_ks}</td>
             <td>${cartItem.poc_ks * cartItem.article.cena} EUR</td>
 

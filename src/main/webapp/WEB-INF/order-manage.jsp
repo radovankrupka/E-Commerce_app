@@ -9,12 +9,14 @@
 
 <h2 class="d-flex justify-content-center align-items-center"> Orders of all users
 </h2>
+<br>
+<h3 class="d-flex justify-content-center align-items-center"> Sorted by date</h3>
 
 
 
 
 <c:forEach items="${orderList}" var="order">
-<table id = "${order.id}" class="table table-primary table-hover">
+<table id = "${order.id}" class="table table-primary table-hover mx-auto w-75">
 
 <tr>
             <th>User ID</th>
@@ -32,7 +34,7 @@
         <tr>
             <td>${order.id_pouz}</td>
             <td>${order.date}</td>
-            <td>${order.celkova_suma}</td>
+            <td>${order.celkova_suma} EUR</td>
             <td>
                 <form action="UpdateOrder"  >
                     <input type="hidden" value="${order.id}" name="updateID">
@@ -53,7 +55,7 @@
 
             <tr>
                 <td>${orderItem.tovar.nazov}</td>
-                <td>${orderItem.cena_kus}</td>
+                <td>${orderItem.cena_kus} EUR</td>
                 <td>${orderItem.poc_ks}</td>
                 <td>${orderItem.cena_spolu} EUR</td>
 

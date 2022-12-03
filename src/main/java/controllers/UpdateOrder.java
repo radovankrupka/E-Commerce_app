@@ -29,12 +29,15 @@ public class UpdateOrder extends HttpServlet {
             int orderID = Integer.parseInt(request.getParameter("updateID"));
             String status = request.getParameter("orderStatus");
             System.out.println("update stavu obj " + orderID + " na > " + status);
-            OrderDAO.updateOrderById(orderID,status );
+            OrderDAO.updateOrderById(orderID,status, session );
 
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("ManageOrders");
             dispatcher.forward(request,response);
 
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 

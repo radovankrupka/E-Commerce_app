@@ -7,14 +7,14 @@
 </head>
 <body>
 
-<h2> Your Orders
+<h2 class="d-flex justify-content-center align-items-center"> Your Orders
 </h2>
 
 
 
 
 <c:forEach items="${orderList}" var="order">
-    <table id = "${order.id}" class="table table-primary table-hover">
+    <table id = "${order.id}" class="table table-primary table-hover mx-auto w-75">
     <tr>
         <th>Date and time</th>
         <th>Sum</th>
@@ -23,7 +23,7 @@
 
     <tr>
         <td>${order.date}</td>
-        <td>${order.celkova_suma}</td>
+        <td>${order.celkova_suma} EUR</td>
         <td>${order.stav}</td>
     </tr>
 
@@ -31,14 +31,14 @@
         <th>Article</th>
         <th>Price per piece</th>
         <th>Num. bought</th>
-        <th>Sum per item</th>
+        <th>Sum per article</th>
     </tr>
 
     <c:forEach items="${order.orderItems}" var="orderItem">
 
         <tr>
             <td>${orderItem.tovar.nazov}</td>
-            <td>${orderItem.cena_kus}</td>
+            <td>${orderItem.cena_kus} EUR</td>
             <td>${orderItem.poc_ks}</td>
             <td>${orderItem.cena_spolu} EUR</td>
 

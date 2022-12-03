@@ -35,11 +35,11 @@ public class Cart extends HttpServlet {
             User currentUser = (User) session.getAttribute("user");
 
             List<CartItem> list = new ArrayList<>();
-            list = CartItemDAO.getAllProductsFromCart(currentUser);  //sem sa itemy dostanu
+            list = CartItemDAO.getAllProductsFromCart(currentUser,session);  //sem sa itemy dostanu
 
 
             //napln cart itemy objektami Article pre kazdy typ tovvaru
-            list.stream().forEach(cartItem -> cartItem.setArticle(ArticleDAO.getItemById(cartItem.getId_tovaru())));
+            list.stream().forEach(cartItem -> cartItem.setArticle(ArticleDAO.getItemById(cartItem.getId_tovaru(),session)));
 
             /*List<Article> tovarList = new ArrayList<>();
 
@@ -55,6 +55,9 @@ public class Cart extends HttpServlet {
 
 
 
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 }

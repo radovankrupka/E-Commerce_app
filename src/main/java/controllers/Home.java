@@ -3,6 +3,7 @@ package controllers;
 
 import DAO.ArticleDAO;
 import DAO.UserDAO;
+import config.DBConnection;
 import model.Article;
 import model.User;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/main")
@@ -44,10 +46,11 @@ public class Home extends HttpServlet {
 
         if ( session.getAttribute("user") == null ) { //ak nemam usera, musi sa prihlasit
 
-            if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"))) { //over credentials
+            if (UserDAO.checkIfUserExists(request.getParameter("email"), request.getParameter("password"),session)) { //over credentials
 
-                User user = UserDAO.getUserByLogin(request.getParameter("email"));
+                User user = UserDAO.getUserByLogin(request.getParameter("email"),session);
                 session.setAttribute("user", user);
+                DBConnection.createConnection(session);
 
                 System.out.println("uspesne prihlasenie, zobraz main page");
                 operacia = null;
@@ -74,7 +77,11 @@ public class Home extends HttpServlet {
         if (session.getAttribute("user") != null && operacia.equals("logout")){ //mam usera, chcem sa odhlasit
 
             System.out.println("idem odhlasit");
-            odhlasUsera(request,response);
+            try {
+                odhlasUsera(request,response,session);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
         }
 
@@ -85,8 +92,9 @@ public class Home extends HttpServlet {
         dispatcher.forward(request,response);
     }
 
-    private void odhlasUsera(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void odhlasUsera(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException, SQLException {
 
+        DBConnection.getConnection(session).close();
         request.getSession().invalidate();
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         dispatcher.forward(request,response);
@@ -101,7 +109,7 @@ public class Home extends HttpServlet {
 
     private void zobrazMainPage(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        List<Article> articleList =  ArticleDAO.getAllProducts();
+        List<Article> articleList =  ArticleDAO.getAllProducts(session);
         articleList.stream().forEach(System.out::println);
         session.setAttribute("articleList", articleList);
 

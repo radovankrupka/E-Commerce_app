@@ -34,7 +34,7 @@ public class SendOrder extends HttpServlet {
 
 
         if (session.getAttribute("user") != null) {
-            cartItems = CartItemDAO.getAllProductsFromCart((User) session.getAttribute("user"));
+            cartItems = CartItemDAO.getAllProductsFromCart((User) session.getAttribute("user"), session);
 
             System.out.println("\n\n\n\n Ideme odoslat objednavku \n\n\n");
             cartItems.stream().forEach(System.out::println);
@@ -51,7 +51,7 @@ public class SendOrder extends HttpServlet {
                     for (CartItem cartItem : cartItems) {
                         //zistime kolko ks je v kosiku a kolko ks je na sklade, porovname
                         //numOfItems je 0 pretoze chceme objednat len pocet ktoty mame v kosiku
-                        if (!(CartItemDAO.enoughItemsInStore(cartItem.getArticle().getId(), 0, ((User) session.getAttribute("user")).getId()))) {
+                        if (!(CartItemDAO.enoughItemsInStore(cartItem.getArticle().getId(), 0, ((User) session.getAttribute("user")).getId(),session))) {
                             //ak niektoreho z tovarov nie je v sklade dost, otoc flag
                             flag = false;
                             article_ids.add(cartItem.getId());
@@ -70,7 +70,7 @@ public class SendOrder extends HttpServlet {
                             OrderDAO.orderItemsFromCart(session, cartItems);
 
                             //odcitat nakupeny tovar zo skladovych zasob
-                            OrderDAO.decreaseStockCount(cartItems);
+                            OrderDAO.decreaseStockCount(cartItems,session);
 
 
 
@@ -89,6 +89,9 @@ public class SendOrder extends HttpServlet {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+            dispatcher.forward(request,response);
         }
     }
 }

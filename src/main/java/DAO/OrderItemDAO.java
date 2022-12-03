@@ -1,9 +1,9 @@
 package DAO;
 
 import config.DBConnection;
-import model.CartItem;
 import model.OrderItem;
 
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,15 +14,14 @@ import java.util.List;
 public class OrderItemDAO {
 
 
-    public static List<OrderItem> getAllOrderItemsOfOrder(int order_id) {
+    public static List<OrderItem> getAllOrderItemsOfOrder(int order_id, HttpSession session) {
 
         List<OrderItem> orderItems = new ArrayList<>();
 
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "select * FROM obj_polozky WHERE ID_objednavky =" + order_id;
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -30,8 +29,8 @@ public class OrderItemDAO {
 
                 OrderItem item = new OrderItem();
                 item.setId(rs.getInt("ID"));
-                item.setTovar(ArticleDAO.getItemById(rs.getInt("ID_tovaru")));
-                item.setCena_kus(rs.getDouble("cena"));
+                item.setTovar(ArticleDAO.getItemById(rs.getInt("ID_tovaru"),session));
+                item.setCena_kus(item.getTovar().getCena());
                 item.setPoc_ks(rs.getInt("ks"));   //pocet ks v kosiku
                 orderItems.add(item);
 
@@ -49,12 +48,12 @@ public class OrderItemDAO {
 
     }
 
-    public static void deleteOrderItemsByOrderId(int orderID) {
+    public static void deleteOrderItemsByOrderId(int orderID, HttpSession session) {
 
 
         try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "DELETE FROM obj_polozky WHERE ID_objednavky =" + orderID;
             stmt.executeUpdate(sql);
 

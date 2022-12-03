@@ -3,6 +3,7 @@ package DAO;
 import config.DBConnection;
 import model.User;
 
+import javax.servlet.http.HttpSession;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.List;
 public class UserDAO {
 
 
-    public static boolean checkIfUserExists(String login, String pwd)  {
+    public static boolean checkIfUserExists(String login, String pwd, HttpSession session)  {
     try {
 
-    Connection con = DBConnection.getConnection();
-    Statement stmt = con.createStatement();
+
+    Statement stmt = DBConnection.getConnection(session).createStatement();
     String sql = " select count(*) as poc FROM users WHERE login = '" + login + "' AND pwd = '" + pwd + "'";
     ResultSet rs = stmt.executeQuery(sql);
 
@@ -33,14 +34,14 @@ public class UserDAO {
     }
     }
 
-    public static User getUserByLogin(String login){
+    public static User getUserByLogin(String login, HttpSession session){
         User user = new User();
 
         try {
 
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = " select  * FROM users WHERE login = '" + login + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -60,7 +61,7 @@ public class UserDAO {
 
             rs.close();
             stmt.close();
-            con.close();
+
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -69,14 +70,14 @@ public class UserDAO {
         return user;
     }
 
-    public static User getUserById(int id){
+    public static User getUserById(int id,HttpSession session){
 
         User user = new User();
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = " select * FROM users WHERE id = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -102,14 +103,13 @@ public class UserDAO {
         return user;
     }
 
-    public static void createUser(User user){
+    public static void createUser(User user, HttpSession session){
 
         try{
-            Connection con = DBConnection.getConnection();
 
             String sql = "INSERT INTO users (login,pwd,adresa,zlava,meno,priezvisko,je_admin) values (?,?,?,?,?,?,?)";
 
-            PreparedStatement preparedStmt = con.prepareStatement(sql);
+            PreparedStatement preparedStmt = DBConnection.getConnection(session).prepareStatement(sql);
             preparedStmt.setString (1, user.getLogin());
             preparedStmt.setString (2, user.getPwd());
             preparedStmt.setString(3,user.getAdresa());
@@ -120,22 +120,21 @@ public class UserDAO {
 
             preparedStmt.executeUpdate();
 
-            con.close();
+
 
         }catch(Exception e){e.printStackTrace();}
 
 
     }
 
-    public static boolean checkUserByLogin(String login)  {
+    public static boolean checkUserByLogin(String login,HttpSession session)  {
 
         ResultSet rs = null;
         Statement stmt = null;
-        Connection con = null;
+
         try {
 
-            con = DBConnection.getConnection();
-            stmt = con.createStatement();
+            stmt = DBConnection.getConnection(session).createStatement();
             String sql = " select  COUNT(*) as pocet FROM  users WHERE login = '" + login + "'";
             rs = stmt.executeQuery(sql);
 
@@ -143,7 +142,7 @@ public class UserDAO {
             int poc = rs.getInt("pocet");
             rs.close();
             stmt.close();
-            con.close();
+
 
             return ( poc > 0);
 
@@ -155,15 +154,15 @@ public class UserDAO {
         }
     }
 
-    public static List<User> getAllUsers() {
+    public static List<User> getAllUsers(HttpSession session) {
 
         List<User> userList = new ArrayList<>();
 
 
         try {
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
+
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             String sql = "select * FROM users";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -187,7 +186,7 @@ public class UserDAO {
 
             rs.close();
             stmt.close();
-            con.close();
+
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -199,35 +198,36 @@ public class UserDAO {
     }
 
 
-    public static void changeUserRole(int userID) {
+    public static void changeUserRole(int userID,HttpSession session) {
 
         try{
-            Connection con = DBConnection.getConnection();
 
             String sql = "UPDATE users SET je_admin = NOT je_admin WHERE ID = " + userID;
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             stmt.executeUpdate(sql);
 
 
-            con.close();
 
         }catch(Exception e){e.printStackTrace();}
 
     }
 
-    public static void updateDiscount(int userID, int discount) {
+    public static void updateDiscount(int userID, int discount,HttpSession session) {
 
         try{
-            Connection con = DBConnection.getConnection();
 
             String sql = "UPDATE users SET zlava = " + discount + " WHERE ID = " + userID;
-            Statement stmt = con.createStatement();
+            Statement stmt = DBConnection.getConnection(session).createStatement();
             stmt.executeUpdate(sql);
 
 
-            con.close();
+
 
         }catch(Exception e){e.printStackTrace();}
 
+    }
+
+    public static User getUserFromSession(HttpSession session) {
+        return ((User) session.getAttribute("user"));
     }
 }
